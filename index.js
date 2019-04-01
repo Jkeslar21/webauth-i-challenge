@@ -18,8 +18,6 @@ server.get('/', (req, res) => {
 
 server.post('/api/register', (req, res) => {
   let user = req.body;
-
-  // Hash the password
   user.password = bcrypt.hashSync(user.password, 4);
 
   Users.add(user)
@@ -37,7 +35,6 @@ server.post('/api/login', (req, res) => {
   Users.findBy({ username })
     .first()
     .then(user => {
-      // check the password guess against the db ...compareSync(passwordGuess, passwordFromDB)
       if (user && bcrypt.compareSync(password, user.password)) {
         res.status(200).json({ message: `Welcome ${user.username}!` });
       } else {
@@ -62,7 +59,6 @@ function only(username) {
     if (req.headers.username === username) {
       next();
   } else {
-    // status(403) is notAuthorized
     res.status(403).json({ message: `You are not ${username}` })
   }
  }
@@ -74,7 +70,6 @@ function restricted(req, res, next) {
     Users.findBy({ username })
       .first()
       .then(user => {
-        // check the password guess against the db ...compareSync(passwordGuess, passwordFromDB)
         if (user && bcrypt.compareSync(password, user.password)) {
           next();
         } else {
